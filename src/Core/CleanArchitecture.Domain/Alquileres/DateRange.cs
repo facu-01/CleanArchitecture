@@ -1,24 +1,33 @@
+using CleanArchitecture.Domain.Abstractions;
+
 namespace CleanArchitecture.Domain.Alquileres;
 
 public sealed record class DateRange
 {
-    private DateRange() {}
+    private DateRange() { }
+
+    public static Error InvalidDateRange => Error.MakeError<DateRange>(
+        nameof(InvalidDateRange),
+        "El rango de fechas especificado es invalido"
+    );
 
     public DateOnly Inicio { get; init; }
     public DateOnly Fin { get; init; }
 
-    public static DateRange Create(DateOnly inicio, DateOnly fin)
+    public static Result<DateRange> Create(DateOnly inicio, DateOnly fin)
     {
         if (inicio > fin)
         {
-            throw new ApplicationException("La fecha final debe ser mayor a la fecha inicio");
-            
+            return Result.Failure<DateRange>(InvalidDateRange);
         }
-        return new DateRange
-        {
-            Inicio = inicio,
-            Fin = fin
-        };
+
+        return Result.Success(
+            new DateRange
+            {
+                Inicio = inicio,
+                Fin = fin
+            }
+        );
     }
 
 
