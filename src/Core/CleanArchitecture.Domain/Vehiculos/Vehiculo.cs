@@ -34,7 +34,10 @@ public sealed class Vehiculo : Entity
     public DateTime? FechaUltimoAlquiler { get; private set; }
 
 
+    internal void AlquilarFecha(DateTime FechaAlquiler)
+    {
+        FechaUltimoAlquiler = FechaAlquiler;
+    }
 
-     
 
 }

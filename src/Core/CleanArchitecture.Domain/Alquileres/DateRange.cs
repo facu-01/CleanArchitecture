@@ -14,6 +14,8 @@ public sealed record class DateRange
     public DateOnly Inicio { get; init; }
     public DateOnly Fin { get; init; }
 
+    public int CantidadDias => Fin.DayNumber - Inicio.DayNumber;
+
     public static Result<DateRange> Create(DateOnly inicio, DateOnly fin)
     {
         if (inicio > fin)
