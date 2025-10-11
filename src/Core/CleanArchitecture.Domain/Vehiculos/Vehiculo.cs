@@ -13,6 +13,7 @@ public sealed class Vehiculo : Entity
         Moneda precio,
         Moneda mantenimiento,
         List<Accesorio> accesorios,
+        Direccion direccion,
         DateTime? fechaUltimoAlquiler
         ) : base(id)
     {
@@ -22,11 +23,12 @@ public sealed class Vehiculo : Entity
         Precio = precio;
         Mantenimiento = mantenimiento;
         Accesorios = accesorios;
+        Direccion = direccion;
         FechaUltimoAlquiler = fechaUltimoAlquiler;
     }
 
     public Modelo Modelo { get; private set; }
-
+    public Direccion Direccion { get; private set; }
     public Vin Vin { get; private set; }
     public Moneda Precio { get; private set; }
     public Moneda Mantenimiento { get; private set; }

@@ -9,6 +9,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{8D626EA8-C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitecture.Domain", "src\Core\CleanArchitecture.Domain\CleanArchitecture.Domain.csproj", "{2A109581-C8FC-4140-BA30-673F5E50BC25}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitecture.Application", "src\Core\CleanArchitecture.Application\CleanArchitecture.Application.csproj", "{EA7E407A-C587-42C6-87C2-6DADC5C9645F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,18 @@ Global
 		{2A109581-C8FC-4140-BA30-673F5E50BC25}.Release|x64.Build.0 = Release|Any CPU
 		{2A109581-C8FC-4140-BA30-673F5E50BC25}.Release|x86.ActiveCfg = Release|Any CPU
 		{2A109581-C8FC-4140-BA30-673F5E50BC25}.Release|x86.Build.0 = Release|Any CPU
+		{EA7E407A-C587-42C6-87C2-6DADC5C9645F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA7E407A-C587-42C6-87C2-6DADC5C9645F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA7E407A-C587-42C6-87C2-6DADC5C9645F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{EA7E407A-C587-42C6-87C2-6DADC5C9645F}.Debug|x64.Build.0 = Debug|Any CPU
+		{EA7E407A-C587-42C6-87C2-6DADC5C9645F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EA7E407A-C587-42C6-87C2-6DADC5C9645F}.Debug|x86.Build.0 = Debug|Any CPU
+		{EA7E407A-C587-42C6-87C2-6DADC5C9645F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA7E407A-C587-42C6-87C2-6DADC5C9645F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA7E407A-C587-42C6-87C2-6DADC5C9645F}.Release|x64.ActiveCfg = Release|Any CPU
+		{EA7E407A-C587-42C6-87C2-6DADC5C9645F}.Release|x64.Build.0 = Release|Any CPU
+		{EA7E407A-C587-42C6-87C2-6DADC5C9645F}.Release|x86.ActiveCfg = Release|Any CPU
+		{EA7E407A-C587-42C6-87C2-6DADC5C9645F}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -38,5 +52,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{8D626EA8-CB54-BC41-363A-217881BEBA6E} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{2A109581-C8FC-4140-BA30-673F5E50BC25} = {8D626EA8-CB54-BC41-363A-217881BEBA6E}
+		{EA7E407A-C587-42C6-87C2-6DADC5C9645F} = {8D626EA8-CB54-BC41-363A-217881BEBA6E}
 	EndGlobalSection
 EndGlobal
