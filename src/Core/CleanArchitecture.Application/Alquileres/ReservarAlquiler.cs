@@ -6,6 +6,7 @@ using CleanArchitecture.Domain.Alquileres;
 using CleanArchitecture.Domain.Alquileres.Events;
 using CleanArchitecture.Domain.Users;
 using CleanArchitecture.Domain.Vehiculos;
+using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,6 +21,15 @@ public static class ReservarAlquiler
         DateOnly FechaFin
     ) : ICommand<Guid>;
 
+    public class CommandValidator : AbstractValidator<Command>
+    {
+        public CommandValidator()
+        {
+            RuleFor(c => c.UserId).NotEmpty();
+            RuleFor(c => c.VehiculoId).NotEmpty();
+            RuleFor(c => c.FechaInicio).LessThan(c => c.FechaFin);
+        }
+    }
 
     internal sealed class Handler : ICommandHandler<Command, Guid>
     {
