@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitecture.Application.Abstractions.DataAccess;
 
-public interface IApplicationDbContext
+public interface IApplicationDbContext : IUnitOfWork
 {
     public DbSet<Alquiler> Alquileres { get; }
     public DbSet<Review> Reviews { get; }

@@ -45,6 +45,7 @@ public static class GetAlquilerById
         public async Task<Result<AlquilerResponse>> Handle(Query request, CancellationToken cancellationToken)
         {
             var alquiler = await _applicationDbContext.Alquileres
+                            .AsNoTracking()
                             .FirstOrDefaultAsync(a => a.Id == request.Id, cancellationToken);
 
             if (alquiler is null)

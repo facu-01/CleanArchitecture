@@ -5,5 +5,5 @@ namespace CleanArchitecture.Application.Abstractions.DataAccess;
 
 public interface IUnitOfWork
 {
-    Task<int> SaveChangesAsync(IApplicationDbContext dbContext, CancellationToken cancellationToken = default);
+    Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

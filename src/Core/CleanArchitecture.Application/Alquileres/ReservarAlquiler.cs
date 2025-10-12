@@ -1,6 +1,7 @@
 using CleanArchitecture.Application.Abstractions.DataAccess;
 using CleanArchitecture.Application.Abstractions.Email;
 using CleanArchitecture.Application.Abstractions.Messaging;
+using CleanArchitecture.Application.Exceptions;
 using CleanArchitecture.Domain.Abstractions;
 using CleanArchitecture.Domain.Alquileres;
 using CleanArchitecture.Domain.Alquileres.Events;
@@ -37,6 +38,14 @@ public static class ReservarAlquiler
         private readonly IUnitOfWork _unitOfWork;
         private readonly PrecioService _precioService;
 
+        private static readonly AlquilerStatus[] _activeAlquilerStatuses =
+        [
+            AlquilerStatus.Confirmado,
+            AlquilerStatus.Reservado,
+            AlquilerStatus.Completado
+        ];
+
+
         public Handler(IApplicationDbContext dbContext, IUnitOfWork unitOfWork, PrecioService precioService)
         {
             _dbContext = dbContext;
@@ -63,18 +72,14 @@ public static class ReservarAlquiler
 
             var duracionResult = DateRange.Create(request.FechaInicio, request.FechaFin);
 
-            if (duracionResult.IsFailure)
-            {
-                return Result.Failure<Guid>(new Error("a", ""));
-            }
-
             var periodo = duracionResult.Value;
 
             var isOverlaping = await _dbContext.Alquileres.AnyAsync(
                 a =>
                 a.VehiculoId == request.VehiculoId &&
                 a.Periodo.Inicio <= periodo.Fin &&
-                a.Periodo.Fin >= periodo.Inicio
+                a.Periodo.Fin >= periodo.Inicio &&
+                _activeAlquilerStatuses.Contains(a.Status)
             );
 
             if (isOverlaping)
@@ -82,7 +87,9 @@ public static class ReservarAlquiler
                 return Result.Failure<Guid>(AlquilerErrors.Overlap);
             }
 
-            var alquiler = Alquiler.Reservar(
+            try
+            {
+                var alquiler = Alquiler.Reservar(
                 vehiculo,
                 user.Id,
                 periodo,
@@ -90,11 +97,17 @@ public static class ReservarAlquiler
                 _precioService
             );
 
-            await _dbContext.Alquileres.AddAsync(alquiler, cancellationToken);
+                await _dbContext.Alquileres.AddAsync(alquiler, cancellationToken);
 
-            await _unitOfWork.SaveChangesAsync(_dbContext, cancellationToken);
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            return Result.Success(alquiler.Id);
+                return Result.Success(alquiler.Id);
+            }
+            catch (ConcurrencyException)
+            {
+
+                return Result.Failure<Guid>(AlquilerErrors.Overlap);
+            }
         }
     }
 

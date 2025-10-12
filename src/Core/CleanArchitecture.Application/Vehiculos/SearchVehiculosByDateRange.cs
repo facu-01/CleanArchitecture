@@ -36,11 +36,11 @@ public static class SearchVehiculosByDateRange
     internal sealed class Handler : IQueryHandler<Query, List<VehiculoResponse>>
     {
         private readonly IApplicationDbContext _applicationDbContext;
-        private static readonly int[] ActiveAlquilerStatuses =
+        private static readonly AlquilerStatus[] _activeAlquilerStatuses =
         [
-            (int)AlquilerStatus.Confirmado,
-            (int)AlquilerStatus.Reservado,
-            (int)AlquilerStatus.Completado
+            AlquilerStatus.Confirmado,
+            AlquilerStatus.Reservado,
+            AlquilerStatus.Completado
         ];
 
         public Handler(IApplicationDbContext applicationDbContext)
@@ -58,9 +58,10 @@ public static class SearchVehiculosByDateRange
             var vehiculos = _applicationDbContext.Vehiculos;
             var alquileres = _applicationDbContext.Alquileres;
 
-            var vehiculosDisp = await vehiculos.GroupJoin(
+            var vehiculosDisp = await vehiculos.AsNoTracking()
+            .GroupJoin(
                 alquileres.Where(a =>
-                    ActiveAlquilerStatuses.Contains((int)a.Status) &&
+                    _activeAlquilerStatuses.Contains(a.Status) &&
                     a.Periodo.Inicio <= request.Hasta &&
                     a.Periodo.Fin >= request.Desde
                 ),
