@@ -1,3 +1,4 @@
+using CleanArchitecture.Api.Extensions;
 using CleanArchitecture.Application;
 using CleanArchitecture.Infraestructure;
 
@@ -21,7 +22,10 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
+await app.ApplyMigration();
+
 app.MapControllers();
+
 
 
 app.Run();

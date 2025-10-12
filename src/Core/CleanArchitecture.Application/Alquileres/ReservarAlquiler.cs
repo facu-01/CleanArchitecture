@@ -35,7 +35,6 @@ public static class ReservarAlquiler
     internal sealed class Handler : ICommandHandler<Command, Guid>
     {
         private readonly IApplicationDbContext _dbContext;
-        private readonly IUnitOfWork _unitOfWork;
         private readonly PrecioService _precioService;
 
         private static readonly AlquilerStatus[] _activeAlquilerStatuses =
@@ -46,10 +45,9 @@ public static class ReservarAlquiler
         ];
 
 
-        public Handler(IApplicationDbContext dbContext, IUnitOfWork unitOfWork, PrecioService precioService)
+        public Handler(IApplicationDbContext dbContext, PrecioService precioService)
         {
             _dbContext = dbContext;
-            _unitOfWork = unitOfWork;
             _precioService = precioService;
         }
 
@@ -99,7 +97,7 @@ public static class ReservarAlquiler
 
                 await _dbContext.Alquileres.AddAsync(alquiler, cancellationToken);
 
-                await _unitOfWork.SaveChangesAsync(cancellationToken);
+                await _dbContext.SaveChangesAsync(cancellationToken);
 
                 return Result.Success(alquiler.Id);
             }

@@ -7,6 +7,7 @@ namespace CleanArchitecture.Domain.Alquileres;
 
 public class Alquiler : Entity
 {
+    private Alquiler() { }
 
     private Alquiler(
         Guid id,

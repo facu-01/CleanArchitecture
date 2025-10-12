@@ -4,6 +4,8 @@ namespace CleanArchitecture.Domain.Abstractions;
 
 public abstract class Entity
 {
+    protected Entity() { }
+
     public Entity(Guid id)
     {
         Id = id;
