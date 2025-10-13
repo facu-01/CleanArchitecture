@@ -6,6 +6,7 @@ using CleanArchitecture.Infraestructure.Email;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace CleanArchitecture.Infraestructure;
 
@@ -26,7 +27,9 @@ public static class ServiceRegistration
 
         services.AddDbContext<ApplicationDbContext>(options =>
         {
-            options.UseNpgsql(connectionString).UseSnakeCaseNamingConvention();
+            options.UseNpgsql(connectionString)
+            .UseSnakeCaseNamingConvention();
+
         }
         );
 

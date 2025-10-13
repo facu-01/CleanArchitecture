@@ -22,7 +22,10 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-await app.ApplyMigration();
+app.ApplyMigration();
+// app.SeedData();
+
+app.UseCustomExceptionHandler();
 
 app.MapControllers();
 

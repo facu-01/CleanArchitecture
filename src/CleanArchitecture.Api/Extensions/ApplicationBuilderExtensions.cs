@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using CleanArchitecture.Api.Middleware;
 using CleanArchitecture.Application.Abstractions.DataAccess;
 using CleanArchitecture.Infraestructure.DataAccess;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +9,7 @@ namespace CleanArchitecture.Api.Extensions;
 
 public static class ApplicationBuilderExtensions
 {
-    public static async Task ApplyMigration(this IApplicationBuilder app)
+    public static void ApplyMigration(this IApplicationBuilder app)
     {
 
         using var scope = app.ApplicationServices.CreateScope();
@@ -20,7 +21,7 @@ public static class ApplicationBuilderExtensions
         {
             var context = service.GetRequiredService<ApplicationDbContext>();
 
-            await context.Database.MigrateAsync();
+            context.Database.Migrate();
 
         }
         catch (Exception ex)
@@ -30,7 +31,11 @@ public static class ApplicationBuilderExtensions
             logger.LogError(ex, "Error en migracion");
         }
 
+    }
 
+    public static void UseCustomExceptionHandler(this IApplicationBuilder app)
+    {
+        app.UseMiddleware<ExceptionHandlerMiddleware>();
     }
 
 }

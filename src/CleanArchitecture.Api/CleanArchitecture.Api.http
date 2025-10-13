@@ -1,6 +1,21 @@
-@CleanArchitecture.Api_HostAddress = http://localhost:5015
+@BaseUrl = http://localhost:5015
 
-GET {{CleanArchitecture.Api_HostAddress}}/weatherforecast/
+GET {{BaseUrl}}/api/Vehiculos
+?desde=2025-10-01
+&hasta=2025-12-01
 Accept: application/json
+
+###
+
+POST {{BaseUrl}}/api/Alquileres
+Accept: application/json
+Content-Type: application/json
+
+{
+    "vehiculoId": "30fb2b42-036b-4de6-b3d3-fd5c99c14631",
+    "userId": "30fb2b42-036b-4de6-b3d3-fd5c99c14631",
+    "desde": "2025-10-12",
+    "hasta": "2025-12-12"
+}
 
 ###
