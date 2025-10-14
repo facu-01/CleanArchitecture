@@ -2,16 +2,18 @@ using System;
 
 namespace CleanArchitecture.Domain.Abstractions;
 
-public abstract class Entity
+public abstract class Entity<TEntityId> : IEntity
 {
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     protected Entity() { }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 
-    public Entity(Guid id)
+    public Entity(TEntityId id)
     {
         Id = id;
     }
 
-    public Guid Id { get; init; }
+    public TEntityId Id { get; init; }
 
     private readonly List<IDomainEvent> _domainEvents = new();
 

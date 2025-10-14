@@ -4,7 +4,9 @@ using CleanArchitecture.Domain.Abstractions;
 using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitecture.Infraestructure.DataAccess.Repositories;
-internal abstract class GenericRepository<T> : IGenericRepository<T> where T : Entity
+internal abstract class GenericRepository<TEntity,TEntityId> : IGenericRepository<TEntity, TEntityId> 
+    where TEntity : Entity<TEntityId>
+    where TEntityId : class
 {
     protected readonly ApplicationDbContext _dbContext;
 
@@ -14,13 +16,13 @@ internal abstract class GenericRepository<T> : IGenericRepository<T> where T : E
     }
 
 
-    public async Task AddAsync(T entity, CancellationToken cancellationToken = default)
+    public async Task AddAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         await _dbContext.AddAsync(entity, cancellationToken);
     }
 
-    public async Task<T?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<TEntity?> GetByIdAsync(TEntityId id, CancellationToken cancellationToken = default)
     {
-        return await _dbContext.Set<T>().FirstOrDefaultAsync(e => e.Id == id, cancellationToken);
+        return await _dbContext.Set<TEntity>().FirstOrDefaultAsync(e => e.Id == id, cancellationToken);
     }
 }

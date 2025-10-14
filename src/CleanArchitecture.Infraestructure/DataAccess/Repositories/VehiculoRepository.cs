@@ -4,7 +4,7 @@ using CleanArchitecture.Domain.Vehiculos;
 using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitecture.Infraestructure.DataAccess.Repositories;
-internal sealed class VehiculoRepository : GenericRepository<Vehiculo>, IVehiculoRepository
+internal sealed class VehiculoRepository : GenericRepository<Vehiculo,VehiculoId>, IVehiculoRepository
 {
     public VehiculoRepository(ApplicationDbContext dbContext) : base(dbContext)
     {

@@ -60,19 +60,20 @@ public static class ReservarAlquilerFeature
 
         public async Task<Result<Guid>> Handle(Command request, CancellationToken cancellationToken)
         {
-
-            var user = await _userRepository.GetByIdAsync(request.UserId, cancellationToken);
+            var userId = new UserId(request.UserId);
+            var user = await _userRepository.GetByIdAsync(userId, cancellationToken);
 
             if (user is null)
             {
-                return Result.Failure<Guid>(EntityErrors.NotFound<User>(request.UserId));
+                return Result.Failure<Guid>(EntityErrors.NotFound<User,UserId>(userId));
             }
 
-            var vehiculo = await _vehiculoRepository.GetByIdAsync(request.VehiculoId, cancellationToken);
+            var vehiculoId = new VehiculoId(request.VehiculoId);
+            var vehiculo = await _vehiculoRepository.GetByIdAsync(vehiculoId, cancellationToken);
 
             if (vehiculo is null)
             {
-                return Result.Failure<Guid>(EntityErrors.NotFound<Vehiculo>(request.VehiculoId));
+                return Result.Failure<Guid>(EntityErrors.NotFound<Vehiculo,VehiculoId>(vehiculoId));
             }
 
             var duracionResult = DateRange.Create(request.FechaInicio, request.FechaFin);
@@ -81,7 +82,7 @@ public static class ReservarAlquilerFeature
 
             var isOverlaping = await _alquilerRepository.IsOverlapping(
                 periodo,
-                request.VehiculoId,
+                vehiculoId,
                 _activeAlquilerStatuses,
                 cancellationToken
             );
@@ -105,7 +106,7 @@ public static class ReservarAlquilerFeature
 
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-                return Result.Success(alquiler.Id);
+                return Result.Success(alquiler.Id.Value);
             }
             catch (ConcurrencyException)
             {

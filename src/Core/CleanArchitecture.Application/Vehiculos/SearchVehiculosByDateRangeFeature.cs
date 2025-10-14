@@ -65,7 +65,7 @@ public static class SearchVehiculosByDateRangeFeature
 
             var vehiculosDispResp = vehiculosDisp.Select(v => new VehiculoResponse
             {
-                Id = v.Id,
+                Id = v.Id.Value,
                 Modelo = v.Modelo.Value,
                 Vin = v.Vin.Value,
                 Precio = v.Precio.Monto,

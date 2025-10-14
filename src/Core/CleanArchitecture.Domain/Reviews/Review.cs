@@ -1,10 +1,12 @@
 using CleanArchitecture.Domain.Abstractions;
 using CleanArchitecture.Domain.Alquileres;
 using CleanArchitecture.Domain.Reviews.Events;
+using CleanArchitecture.Domain.Users;
+using CleanArchitecture.Domain.Vehiculos;
 
 namespace CleanArchitecture.Domain.Reviews;
 
-public class Review : Entity
+public class Review : Entity<ReviewId>
 {
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
@@ -12,10 +14,10 @@ public class Review : Entity
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 
     private Review(
-        Guid id,
-        Guid vehiculoId,
-        Guid alquilerId,
-        Guid userId,
+        ReviewId id,
+        VehiculoId vehiculoId,
+        AlquilerId alquilerId,
+        UserId userId,
         Rating rating,
         Comentario comentario,
         DateTime fechaCreacion
@@ -29,9 +31,9 @@ public class Review : Entity
         FechaCreacion = fechaCreacion;
     }
 
-    public Guid VehiculoId { get; private set; }
-    public Guid AlquilerId { get; private set; }
-    public Guid UserId { get; private set; }
+    public VehiculoId VehiculoId { get; private set; }
+    public AlquilerId AlquilerId { get; private set; }
+    public UserId UserId { get; private set; }
     public Rating Rating { get; private set; }
     public Comentario Comentario { get; private set; }
     public DateTime FechaCreacion { get; private set; }
@@ -50,7 +52,7 @@ public class Review : Entity
         }
 
         var review = new Review(
-                Guid.NewGuid(),
+                ReviewId.New(),
                 alquiler.VehiculoId,
                 alquiler.Id,
                 alquiler.UserId,

@@ -1,8 +1,8 @@
 ﻿namespace CleanArchitecture.Domain.Abstractions;
-public interface IGenericRepository<T> where T : Entity
+public interface IGenericRepository<TEntity, TEntityId> where TEntity : Entity<TEntityId>
 {
-    Task<T?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<TEntity?> GetByIdAsync(TEntityId id, CancellationToken cancellationToken = default);
 
-    Task AddAsync(T entity, CancellationToken cancellationToken = default);
+    Task AddAsync(TEntity entity, CancellationToken cancellationToken = default);
 
 }

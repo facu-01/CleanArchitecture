@@ -41,11 +41,12 @@ public static class GetAlquilerByIdFeature
 
         public async Task<Result<AlquilerResponse>> Handle(Query request, CancellationToken cancellationToken)
         {
-            var alquiler = await _alquilerRepository.GetByIdAsync(request.Id, cancellationToken);
+            var alquilerId = new  AlquilerId(request.Id);
+            var alquiler = await _alquilerRepository.GetByIdAsync(alquilerId, cancellationToken);
 
             if (alquiler is null)
             {
-                return Result.Failure<AlquilerResponse>(EntityErrors.NotFound<Alquiler>(request.Id));
+                return Result.Failure<AlquilerResponse>(EntityErrors.NotFound<Alquiler,AlquilerId>(alquilerId));
             }
 
             var alquilerResponse = new AlquilerResponse
@@ -53,7 +54,7 @@ public static class GetAlquilerByIdFeature
                 FechaCreacion = alquiler.FechaCreacion,
                 FechaFinal = alquiler.Periodo.Fin,
                 FechaInicio = alquiler.Periodo.Inicio,
-                Id = alquiler.Id,
+                Id = alquiler.Id.Value,
                 PrecioAccesorios = alquiler.PrecioAccesorios.Monto,
                 TipoMonedaAccesorios = alquiler.PrecioAccesorios.TipoMoneda.Codigo,
                 PrecioAlquiler = alquiler.PrecioPorPeriodo.Monto,
@@ -62,9 +63,9 @@ public static class GetAlquilerByIdFeature
                 TipoMonedaMantenimiento = alquiler.PrecioMantenimiento.TipoMoneda.Codigo,
                 PrecioTotal = alquiler.PrecioTotal.Monto,
                 TipoMonedaTotal = alquiler.PrecioTotal.TipoMoneda.Codigo,
-                Status = ((int)alquiler.Status),
-                UserId = alquiler.UserId,
-                VehiculoId = alquiler.VehiculoId,
+                Status = (int)alquiler.Status,
+                UserId = alquiler.UserId.Value,
+                VehiculoId = alquiler.VehiculoId.Value,
             };
 
             return Result.Success(alquilerResponse);

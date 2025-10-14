@@ -1,9 +1,10 @@
 ﻿using CleanArchitecture.Domain.Alquileres;
+using CleanArchitecture.Domain.Vehiculos;
 
 using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitecture.Infraestructure.DataAccess.Repositories;
-internal sealed class AlquilerRepository : GenericRepository<Alquiler>, IAlquilerRepository
+internal sealed class AlquilerRepository : GenericRepository<Alquiler,AlquilerId>, IAlquilerRepository
 {
 
     public AlquilerRepository(ApplicationDbContext dbContext) : base(dbContext)
@@ -12,16 +13,17 @@ internal sealed class AlquilerRepository : GenericRepository<Alquiler>, IAlquile
 
     public async Task<bool> IsOverlapping(
         DateRange periodo,
-        Guid vehiculoId,
+        VehiculoId vehiculoId,
         AlquilerStatus[] statuses,
         CancellationToken cancellationToken = default)
     {
         return await _dbContext.Alquileres.AnyAsync(
                    a =>
-                   a.VehiculoId == vehiculoId &&
+                   a.VehiculoId.Equals(vehiculoId) &&
                    a.Periodo.Inicio <= periodo.Fin &&
                    a.Periodo.Fin >= periodo.Inicio &&
-                   statuses.Contains(a.Status)
+                   statuses.Contains(a.Status),
+                   cancellationToken
         );
     }
 
