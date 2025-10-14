@@ -4,14 +4,14 @@ using CleanArchitecture.Domain.Users.Events;
 
 namespace CleanArchitecture.Domain.Users;
 
-public sealed class User : Entity
+public sealed class User : Entity<UserId>
 {
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     private User() { }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 
     private User(
-        Guid id,
+        UserId id,
         Nombre nombre,
         Apellido apellido,
         Email email
@@ -33,7 +33,7 @@ public sealed class User : Entity
     )
     {
         var user = new User(
-            Guid.NewGuid(),
+            UserId.New(),
             nombre,
             apellido,
             email

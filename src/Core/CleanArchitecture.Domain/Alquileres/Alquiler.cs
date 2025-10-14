@@ -1,20 +1,21 @@
 using CleanArchitecture.Domain.Abstractions;
 using CleanArchitecture.Domain.Alquileres.Events;
 using CleanArchitecture.Domain.Shared;
+using CleanArchitecture.Domain.Users;
 using CleanArchitecture.Domain.Vehiculos;
 
 namespace CleanArchitecture.Domain.Alquileres;
 
-public class Alquiler : Entity
+public class Alquiler : Entity<AlquilerId>
 {
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     private Alquiler() { }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 
     private Alquiler(
-        Guid id,
-        Guid vehiculoId,
-        Guid userId,
+        AlquilerId id,
+        VehiculoId vehiculoId,
+        UserId userId,
         DateRange periodo,
         Moneda precioPorPeriodo,
         Moneda precioMantenimiento,
@@ -35,8 +36,8 @@ public class Alquiler : Entity
         FechaCreacion = fechaCreacion;
     }
 
-    public Guid VehiculoId { get; private set; }
-    public Guid UserId { get; private set; }
+    public VehiculoId VehiculoId { get; private set; }
+    public UserId UserId { get; private set; }
     public DateRange Periodo { get; private set; }
     public Moneda PrecioPorPeriodo { get; private set; }
     public Moneda PrecioMantenimiento { get; private set; }
@@ -52,7 +53,7 @@ public class Alquiler : Entity
     public static Alquiler Reservar
     (
         Vehiculo vehiculo,
-        Guid userId,
+        UserId userId,
         DateRange periodo,
         DateTime fechaCreacion,
         PrecioService precioService
@@ -64,7 +65,7 @@ public class Alquiler : Entity
         );
 
         var alquiler = new Alquiler(
-            Guid.NewGuid(),
+            AlquilerId.New(),
             vehiculo.Id,
             userId,
             periodo,

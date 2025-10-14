@@ -12,6 +12,9 @@ internal sealed class UserConfiguration : IEntityTypeConfiguration<User>
         builder.ToTable("users");
         builder.HasKey(u => u.Id);
 
+        builder.Property(u => u.Id)
+        .HasConversion(userId => userId.Value, value => new UserId(value));
+
         builder.Property(u => u.Nombre)
             .HasMaxLength(200)
             .HasConversion(nombre => nombre.Value, value => new Nombre(value));
