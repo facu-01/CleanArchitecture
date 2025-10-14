@@ -1,4 +1,3 @@
-using CleanArchitecture.Application.Abstractions.DataAccess;
 using CleanArchitecture.Application.Abstractions.Email;
 using CleanArchitecture.Application.Abstractions.Messaging;
 using CleanArchitecture.Application.Exceptions;
@@ -7,13 +6,14 @@ using CleanArchitecture.Domain.Alquileres;
 using CleanArchitecture.Domain.Alquileres.Events;
 using CleanArchitecture.Domain.Users;
 using CleanArchitecture.Domain.Vehiculos;
+
 using FluentValidation;
+
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitecture.Application.Alquileres;
 
-public static class ReservarAlquiler
+public static class ReservarAlquilerFeature
 {
     public record Command(
         Guid VehiculoId,
@@ -34,35 +34,42 @@ public static class ReservarAlquiler
 
     internal sealed class Handler : ICommandHandler<Command, Guid>
     {
-        private readonly IApplicationDbContext _dbContext;
+
         private readonly PrecioService _precioService;
+        private readonly IAlquilerRepository _alquilerRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly IVehiculoRepository _vehiculoRepository;
+        private readonly IUnitOfWork _unitOfWork;
+
 
         private static readonly AlquilerStatus[] _activeAlquilerStatuses =
         [
             AlquilerStatus.Confirmado,
-            AlquilerStatus.Reservado,
-            AlquilerStatus.Completado
+                AlquilerStatus.Reservado,
+                AlquilerStatus.Completado
         ];
 
-
-        public Handler(IApplicationDbContext dbContext, PrecioService precioService)
+        public Handler(PrecioService precioService, IAlquilerRepository alquilerRepository, IUserRepository userRepository, IVehiculoRepository vehiculoRepository, IUnitOfWork unitOfWork)
         {
-            _dbContext = dbContext;
             _precioService = precioService;
+            _alquilerRepository = alquilerRepository;
+            _userRepository = userRepository;
+            _vehiculoRepository = vehiculoRepository;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<Result<Guid>> Handle(Command request, CancellationToken cancellationToken)
         {
 
-            var user = await _dbContext.Users
-                            .FirstOrDefaultAsync(u => u.Id == request.UserId, cancellationToken);
+            var user = await _userRepository.GetByIdAsync(request.UserId, cancellationToken);
+
             if (user is null)
             {
                 return Result.Failure<Guid>(EntityErrors.NotFound<User>(request.UserId));
             }
 
-            var vehiculo = await _dbContext.Vehiculos
-                                .FirstOrDefaultAsync(v => v.Id == request.VehiculoId, cancellationToken);
+            var vehiculo = await _vehiculoRepository.GetByIdAsync(request.VehiculoId, cancellationToken);
+
             if (vehiculo is null)
             {
                 return Result.Failure<Guid>(EntityErrors.NotFound<Vehiculo>(request.VehiculoId));
@@ -72,12 +79,11 @@ public static class ReservarAlquiler
 
             var periodo = duracionResult.Value;
 
-            var isOverlaping = await _dbContext.Alquileres.AnyAsync(
-                a =>
-                a.VehiculoId == request.VehiculoId &&
-                a.Periodo.Inicio <= periodo.Fin &&
-                a.Periodo.Fin >= periodo.Inicio &&
-                _activeAlquilerStatuses.Contains(a.Status)
+            var isOverlaping = await _alquilerRepository.IsOverlapping(
+                periodo,
+                request.VehiculoId,
+                _activeAlquilerStatuses,
+                cancellationToken
             );
 
             if (isOverlaping)
@@ -95,9 +101,9 @@ public static class ReservarAlquiler
                 _precioService
             );
 
-                await _dbContext.Alquileres.AddAsync(alquiler, cancellationToken);
+                await _alquilerRepository.AddAsync(alquiler, cancellationToken);
 
-                await _dbContext.SaveChangesAsync(cancellationToken);
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
 
                 return Result.Success(alquiler.Id);
             }
@@ -111,27 +117,26 @@ public static class ReservarAlquiler
 
     internal sealed class ReservarAlquilerDomainEventHandler : INotificationHandler<AlquilerReservadoDomainEvent>
     {
-        private readonly IApplicationDbContext _dbContext;
+        private readonly IAlquilerRepository _alquilerRepository;
+        private readonly IUserRepository _userRepository;
         private readonly IEmailService _emailService;
 
-        public ReservarAlquilerDomainEventHandler(IApplicationDbContext dbContext, IEmailService emailService)
+        public ReservarAlquilerDomainEventHandler(IAlquilerRepository alquilerRepository, IUserRepository userRepository, IEmailService emailService)
         {
-            _dbContext = dbContext;
+            _alquilerRepository = alquilerRepository;
+            _userRepository = userRepository;
             _emailService = emailService;
         }
 
         public async Task Handle(AlquilerReservadoDomainEvent notification, CancellationToken cancellationToken)
         {
-            var alquiler = await _dbContext.Alquileres
-                                .FirstOrDefaultAsync(a => a.Id == notification.Id, cancellationToken);
+            var alquiler = await _alquilerRepository.GetByIdAsync(notification.Id, cancellationToken);
 
             if (alquiler is null) return;
 
-            var user = await _dbContext.Users
-                                .FirstOrDefaultAsync(u => u.Id == alquiler.UserId, cancellationToken);
+            var user = await _userRepository.GetByIdAsync(alquiler.UserId, cancellationToken);
 
             if (user is null) return;
-
 
             await _emailService.SendAsync(
                 user.Email,

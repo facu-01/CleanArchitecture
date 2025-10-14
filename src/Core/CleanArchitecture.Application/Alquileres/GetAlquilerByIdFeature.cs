@@ -1,13 +1,10 @@
-using System;
-using CleanArchitecture.Application.Abstractions.DataAccess;
 using CleanArchitecture.Application.Abstractions.Messaging;
 using CleanArchitecture.Domain.Abstractions;
 using CleanArchitecture.Domain.Alquileres;
-using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitecture.Application.Alquileres;
 
-public static class GetAlquilerById
+public static class GetAlquilerByIdFeature
 {
 
     public sealed class AlquilerResponse
@@ -35,18 +32,16 @@ public static class GetAlquilerById
     internal sealed class Handler : IQueryHandler<Query, AlquilerResponse>
     {
 
-        private readonly IApplicationDbContext _applicationDbContext;
+        private readonly IAlquilerRepository _alquilerRepository;
 
-        public Handler(IApplicationDbContext applicationDbContext)
+        public Handler(IAlquilerRepository alquilerRepository)
         {
-            _applicationDbContext = applicationDbContext;
+            _alquilerRepository = alquilerRepository;
         }
 
         public async Task<Result<AlquilerResponse>> Handle(Query request, CancellationToken cancellationToken)
         {
-            var alquiler = await _applicationDbContext.Alquileres
-                            .AsNoTracking()
-                            .FirstOrDefaultAsync(a => a.Id == request.Id, cancellationToken);
+            var alquiler = await _alquilerRepository.GetByIdAsync(request.Id, cancellationToken);
 
             if (alquiler is null)
             {

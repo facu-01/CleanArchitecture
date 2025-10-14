@@ -1,12 +1,16 @@
-using System;
-using CleanArchitecture.Application.Abstractions.DataAccess;
 using CleanArchitecture.Application.Abstractions.Email;
+using CleanArchitecture.Domain.Abstractions;
+using CleanArchitecture.Domain.Alquileres;
+using CleanArchitecture.Domain.Reviews;
+using CleanArchitecture.Domain.Users;
+using CleanArchitecture.Domain.Vehiculos;
 using CleanArchitecture.Infraestructure.DataAccess;
+using CleanArchitecture.Infraestructure.DataAccess.Repositories;
 using CleanArchitecture.Infraestructure.Email;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
 namespace CleanArchitecture.Infraestructure;
 
@@ -29,13 +33,16 @@ public static class ServiceRegistration
         {
             options.UseNpgsql(connectionString)
             .UseSnakeCaseNamingConvention();
-
         }
         );
 
-        services.AddScoped<IApplicationDbContext>(
-            provider => provider.GetRequiredService<ApplicationDbContext>()
-        );
+        services.AddScoped<IReviewRepository, ReviewRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IVehiculoRepository, VehiculoRepository>();
+        services.AddScoped<IAlquilerRepository, AlquilerRepository>();
+
+
+        services.AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<ApplicationDbContext>());
 
         return services;
     }

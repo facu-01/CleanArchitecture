@@ -1,14 +1,15 @@
-using System;
 using CleanArchitecture.Domain.Abstractions;
 using CleanArchitecture.Domain.Alquileres;
 using CleanArchitecture.Domain.Reviews.Events;
-using CleanArchitecture.Domain.Vehiculos;
 
 namespace CleanArchitecture.Domain.Reviews;
 
 public class Review : Entity
 {
+
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     private Review() { }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 
     private Review(
         Guid id,

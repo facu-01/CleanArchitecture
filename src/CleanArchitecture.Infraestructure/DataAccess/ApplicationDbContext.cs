@@ -1,17 +1,17 @@
-using System;
-using CleanArchitecture.Application.Abstractions.DataAccess;
 using CleanArchitecture.Application.Exceptions;
 using CleanArchitecture.Domain.Abstractions;
 using CleanArchitecture.Domain.Alquileres;
 using CleanArchitecture.Domain.Reviews;
 using CleanArchitecture.Domain.Users;
 using CleanArchitecture.Domain.Vehiculos;
+
 using MediatR;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitecture.Infraestructure.DataAccess;
 
-public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
+public sealed class ApplicationDbContext : DbContext, IUnitOfWork
 {
 
     private readonly IPublisher _publisher;

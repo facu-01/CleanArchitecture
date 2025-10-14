@@ -1,8 +1,6 @@
-using System;
-using System.Threading.Tasks;
 using CleanArchitecture.Api.Middleware;
-using CleanArchitecture.Application.Abstractions.DataAccess;
 using CleanArchitecture.Infraestructure.DataAccess;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitecture.Api.Extensions;

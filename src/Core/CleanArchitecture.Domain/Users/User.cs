@@ -6,7 +6,9 @@ namespace CleanArchitecture.Domain.Users;
 
 public sealed class User : Entity
 {
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     private User() { }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 
     private User(
         Guid id,

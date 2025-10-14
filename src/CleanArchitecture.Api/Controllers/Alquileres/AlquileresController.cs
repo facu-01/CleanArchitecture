@@ -21,7 +21,7 @@ namespace CleanArchitecture.Api.Controllers.Alquileres
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
         {
-            var query = new GetAlquilerById.Query(id);
+            var query = new GetAlquilerByIdFeature.Query(id);
 
             var result = await _sender.Send(query, cancellationToken);
 
@@ -43,7 +43,7 @@ namespace CleanArchitecture.Api.Controllers.Alquileres
             CancellationToken cancellationToken
         )
         {
-            var command = new ReservarAlquiler.Command(
+            var command = new ReservarAlquilerFeature.Command(
                         request.VehiculoId,
                         request.UserId,
                         request.Desde,
@@ -61,7 +61,7 @@ namespace CleanArchitecture.Api.Controllers.Alquileres
                 };
             }
 
-            return CreatedAtAction(nameof(GetAlquilerById), new { id = result.Value });
+            return CreatedAtAction(nameof(GetAlquilerByIdFeature), new { id = result.Value });
         }
 
 

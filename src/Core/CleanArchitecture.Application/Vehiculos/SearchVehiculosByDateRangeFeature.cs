@@ -1,14 +1,11 @@
-using System;
-using CleanArchitecture.Application.Abstractions.DataAccess;
 using CleanArchitecture.Application.Abstractions.Messaging;
 using CleanArchitecture.Domain.Abstractions;
 using CleanArchitecture.Domain.Alquileres;
 using CleanArchitecture.Domain.Vehiculos;
-using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitecture.Application.Vehiculos;
 
-public static class SearchVehiculosByDateRange
+public static class SearchVehiculosByDateRangeFeature
 {
 
     public sealed class VehiculoResponse
@@ -35,7 +32,13 @@ public static class SearchVehiculosByDateRange
 
     internal sealed class Handler : IQueryHandler<Query, List<VehiculoResponse>>
     {
-        private readonly IApplicationDbContext _applicationDbContext;
+        private readonly IVehiculoRepository _vehiculoRepository;
+
+        public Handler(IVehiculoRepository vehiculoRepository)
+        {
+            _vehiculoRepository = vehiculoRepository;
+        }
+
         private static readonly AlquilerStatus[] _activeAlquilerStatuses =
         [
             AlquilerStatus.Confirmado,
@@ -43,38 +46,22 @@ public static class SearchVehiculosByDateRange
             AlquilerStatus.Completado
         ];
 
-        public Handler(IApplicationDbContext applicationDbContext)
-        {
-            _applicationDbContext = applicationDbContext;
-        }
 
         public async Task<Result<List<VehiculoResponse>>> Handle(Query request, CancellationToken cancellationToken)
         {
-            if (request.Desde > request.Hasta)
+
+            var dateRange = DateRange.Create(request.Desde, request.Hasta);
+
+            if (dateRange.IsFailure)
             {
                 return Result.Success(new List<VehiculoResponse>());
             }
 
-            var vehiculos = _applicationDbContext.Vehiculos;
-            var alquileres = _applicationDbContext.Alquileres;
-
-            var vehiculosDisp = await vehiculos.AsNoTracking()
-            .GroupJoin(
-                alquileres.Where(a =>
-                    _activeAlquilerStatuses.Contains(a.Status) &&
-                    a.Periodo.Inicio <= request.Hasta &&
-                    a.Periodo.Fin >= request.Desde
-                ),
-                vehiculo => vehiculo.Id,
-                alquiler => alquiler.VehiculoId,
-                (vehiculo, alquileres) => new { Vehiculo = vehiculo, Alquileres = alquileres })
-                .SelectMany(
-                    x => x.Alquileres.DefaultIfEmpty(),
-                    (joined, alquiler) => new { joined.Vehiculo, Alquiler = alquiler }
-                )
-                .Where(joined => joined.Alquiler == null)
-                .Select(joined => joined.Vehiculo)
-                .ToListAsync(cancellationToken);
+            var vehiculosDisp = await _vehiculoRepository.VehiculosDisponibles(
+                dateRange.Value,
+                _activeAlquilerStatuses,
+                cancellationToken
+            );
 
             var vehiculosDispResp = vehiculosDisp.Select(v => new VehiculoResponse
             {
