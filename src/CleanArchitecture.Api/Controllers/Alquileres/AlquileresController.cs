@@ -1,4 +1,9 @@
+using System.Net;
+
 using CleanArchitecture.Application.Alquileres;
+using CleanArchitecture.Domain.Abstractions;
+using CleanArchitecture.Domain.Alquileres;
+
 using MediatR;
 
 using Microsoft.AspNetCore.Authorization;
@@ -38,9 +43,12 @@ namespace CleanArchitecture.Api.Controllers.Alquileres
         );
 
         [HttpPost]
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(Guid))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(Error))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
         public async Task<IActionResult> ReservarAlquiler(
-            Guid id,
-            AlquilerReservaRequest request,
+            [FromBody] AlquilerReservaRequest request,
             CancellationToken cancellationToken
         )
         {
@@ -55,9 +63,9 @@ namespace CleanArchitecture.Api.Controllers.Alquileres
 
             if (result.IsFailure)
             {
-                return result.Error.StatusCode switch
+                return result.Error.Code switch
                 {
-                    System.Net.HttpStatusCode.NotFound => NotFound(result.Error),
+                    nameof(AlquilerErrors.NotFound) => NotFound(result.Error),
                     _ => BadRequest(result.Error)
                 };
             }

@@ -5,18 +5,17 @@ namespace CleanArchitecture.Domain.Users;
 public static class UserErrors
 {
     public static Error NotFound => EntityErrors<User>.NotFound();
-    public static Error EmailYaEnUso(Email email) =>
+    public static Error EmailYaEnUso =>
         Error.MakeError<User>(
         nameof(EmailYaEnUso),
-        $"El email {email.Value} ya se encuentra en uso"
+        $"El email ya se encuentra en uso"
     );
 
 
     public static Error InvalidCredentials() =>
         Error.MakeError<User>(
         nameof(InvalidCredentials),
-        "Las credenciales indicadas son inv·lidas",
-        System.Net.HttpStatusCode.Unauthorized
+        "Las credenciales indicadas son inv√°lidas"
     );
 
 }

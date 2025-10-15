@@ -41,10 +41,10 @@ public static class LoginFeature
                 return Result.Failure<string>(UserErrors.InvalidCredentials());
             }
 
-            var passworHasher = new PasswordHasher<User>();
+            var passworHasher = new PasswordHasher<object>();
 
             var verificationResult = passworHasher.VerifyHashedPassword(
-                user,
+                null!,
                 user.PasswordHash.Value,
                 request.Password);
 
