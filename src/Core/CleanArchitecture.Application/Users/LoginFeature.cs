@@ -1,4 +1,5 @@
 ﻿
+using CleanArchitecture.Application.Abstractions.Authentication;
 using CleanArchitecture.Application.Abstractions.Messaging;
 using CleanArchitecture.Domain.Abstractions;
 using CleanArchitecture.Domain.Users;
@@ -19,10 +20,14 @@ public static class LoginFeature
     {
 
         private readonly IUserRepository _userRepository;
+        private readonly IJwtProvider _jwtProvider;
 
-        public Handler(IUserRepository userRepository)
+
+        public Handler(IUserRepository userRepository, IJwtProvider jwtProvider)
         {
             _userRepository = userRepository;
+            _jwtProvider = jwtProvider;
+
         }
 
         public async Task<Result<string>> Handle(Command request, CancellationToken cancellationToken)
@@ -48,7 +53,9 @@ public static class LoginFeature
                 return Result.Failure<string>(UserErrors.InvalidCredentials());
             }
 
-            return Result.Success("JWT");
+            var jwt = await _jwtProvider.Generate(user);
+
+            return Result.Success(jwt);
 
         }
     }

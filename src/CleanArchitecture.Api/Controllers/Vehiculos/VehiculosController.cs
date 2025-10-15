@@ -1,11 +1,14 @@
 using CleanArchitecture.Application.Vehiculos;
 using MediatR;
+
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CleanArchitecture.Api.Controllers.Vehiculos
 {
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class VehiculosController : ControllerBase
     {

@@ -1,12 +1,13 @@
 using CleanArchitecture.Application.Alquileres;
-using CleanArchitecture.Domain.Alquileres;
 using MediatR;
-using Microsoft.AspNetCore.Http;
+
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CleanArchitecture.Api.Controllers.Alquileres
 {
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class AlquileresController : ControllerBase
     {
