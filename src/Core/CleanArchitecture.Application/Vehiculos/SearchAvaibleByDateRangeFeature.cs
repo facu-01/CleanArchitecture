@@ -5,7 +5,7 @@ using CleanArchitecture.Domain.Vehiculos;
 
 namespace CleanArchitecture.Application.Vehiculos;
 
-public static class SearchVehiculosByDateRangeFeature
+public static class SearchAvaibleByDateRangeFeature
 {
 
     public sealed class VehiculoResponse

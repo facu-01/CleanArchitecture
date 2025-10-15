@@ -13,7 +13,7 @@ using MediatR;
 
 namespace CleanArchitecture.Application.Alquileres;
 
-public static class ReservarAlquilerFeature
+public static class ReservarFeature
 {
     public record Command(
         Guid VehiculoId,
@@ -65,7 +65,7 @@ public static class ReservarAlquilerFeature
 
             if (user is null)
             {
-                return Result.Failure<Guid>(EntityErrors.NotFound<User,UserId>(userId));
+                return Result.Failure<Guid>(UserErrors.NotFound);
             }
 
             var vehiculoId = new VehiculoId(request.VehiculoId);
@@ -73,7 +73,7 @@ public static class ReservarAlquilerFeature
 
             if (vehiculo is null)
             {
-                return Result.Failure<Guid>(EntityErrors.NotFound<Vehiculo,VehiculoId>(vehiculoId));
+                return Result.Failure<Guid>(VehiculoErrors.NotFound);
             }
 
             var duracionResult = DateRange.Create(request.FechaInicio, request.FechaFin);

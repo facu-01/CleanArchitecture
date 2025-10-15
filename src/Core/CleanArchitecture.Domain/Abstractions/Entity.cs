@@ -1,5 +1,3 @@
-using System;
-
 namespace CleanArchitecture.Domain.Abstractions;
 
 public abstract class Entity<TEntityId> : IEntity

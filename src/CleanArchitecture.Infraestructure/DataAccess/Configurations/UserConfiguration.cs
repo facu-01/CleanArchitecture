@@ -1,5 +1,5 @@
-using System;
 using CleanArchitecture.Domain.Users;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -26,6 +26,10 @@ internal sealed class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.Email)
             .HasMaxLength(400)
             .HasConversion(email => email.Value, value => new Domain.Users.Email(value));
+
+        builder.Property(u => u.PasswordHash)
+            .HasMaxLength(2000)
+            .HasConversion(passwordHash => passwordHash.Value, value => new PasswordHash(value));
 
         builder.HasIndex(user => user.Email).IsUnique();
 

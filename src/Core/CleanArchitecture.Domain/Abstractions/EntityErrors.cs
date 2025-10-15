@@ -1,16 +1,10 @@
-
-namespace CleanArchitecture.Domain.Abstractions;
-
-public static class EntityErrors
+﻿namespace CleanArchitecture.Domain.Abstractions;
+internal static class EntityErrors<TEntity> where TEntity : IEntity
 {
-
-    public static Error NotFound<TEntity,TEntityId>(TEntityId id) 
-    where TEntity : Entity<TEntityId>
-     =>
-    Error.MakeError<TEntity>(
+    internal static Error NotFound() =>
+        Error.MakeError<TEntity>(
         nameof(NotFound),
-        $"No existe la entidad para el id {id}",
+        $"Entidad {typeof(TEntity).Name} no encontrada",
         System.Net.HttpStatusCode.NotFound
     );
-
 }
