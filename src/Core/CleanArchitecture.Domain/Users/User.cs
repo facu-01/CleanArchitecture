@@ -1,4 +1,3 @@
-using System;
 using CleanArchitecture.Domain.Abstractions;
 using CleanArchitecture.Domain.Users.Events;
 
@@ -14,29 +13,34 @@ public sealed class User : Entity<UserId>
         UserId id,
         Nombre nombre,
         Apellido apellido,
-        Email email
+        Email email,
+        PasswordHash passwordHash
         ) : base(id)
     {
         Nombre = nombre;
         Apellido = apellido;
         Email = email;
+        PasswordHash = passwordHash;
     }
 
     public Nombre Nombre { get; private set; }
     public Apellido Apellido { get; private set; }
     public Email Email { get; private set; }
+    public PasswordHash PasswordHash { get; private set; }
 
     public static User Registrar(
         Nombre nombre,
         Apellido apellido,
-        Email email
+        Email email,
+        PasswordHash passwordHash
     )
     {
         var user = new User(
             UserId.New(),
             nombre,
             apellido,
-            email
+            email,
+            passwordHash
         );
 
         user.RaiseDomainEvent(new UserRegisteredDomainEvent(user.Id));

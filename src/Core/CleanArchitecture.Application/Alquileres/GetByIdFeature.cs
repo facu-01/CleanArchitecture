@@ -4,7 +4,7 @@ using CleanArchitecture.Domain.Alquileres;
 
 namespace CleanArchitecture.Application.Alquileres;
 
-public static class GetAlquilerByIdFeature
+public static class GetByIdFeature
 {
 
     public sealed class AlquilerResponse
@@ -41,12 +41,12 @@ public static class GetAlquilerByIdFeature
 
         public async Task<Result<AlquilerResponse>> Handle(Query request, CancellationToken cancellationToken)
         {
-            var alquilerId = new  AlquilerId(request.Id);
+            var alquilerId = new AlquilerId(request.Id);
             var alquiler = await _alquilerRepository.GetByIdAsync(alquilerId, cancellationToken);
 
             if (alquiler is null)
             {
-                return Result.Failure<AlquilerResponse>(EntityErrors.NotFound<Alquiler,AlquilerId>(alquilerId));
+                return Result.Failure<AlquilerResponse>(AlquilerErrors.NotFound);
             }
 
             var alquilerResponse = new AlquilerResponse

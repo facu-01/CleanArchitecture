@@ -1,10 +1,11 @@
-using System;
 using CleanArchitecture.Domain.Abstractions;
 
 namespace CleanArchitecture.Domain.Alquileres;
 
 public static class AlquilerErrors
 {
+
+    public static Error NotFound => EntityErrors<Alquiler>.NotFound();
 
     public static readonly Error Overlap =
     Error.MakeError<Alquiler>(
