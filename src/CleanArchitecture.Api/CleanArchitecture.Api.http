@@ -1,11 +1,6 @@
 @BaseUrl = http://localhost:5015
 
-GET {{BaseUrl}}/api/Vehiculos
-?desde=2025-10-01
-&hasta=2025-12-01
-Accept: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwZTVlYTE0NS02ZDUxLTRlNTItYTc5Ny01NzExZGQ4MTIzMTEiLCJlbWFpbCI6ImZhY3VAZXhhbXBsZS5jb20iLCJleHAiOjE3NjA1NTQ4MzQsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAxNSIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAxNSJ9.QvvZcrU3zpRLGAyzGjc29EYbEkYo1JWvHafZSz0etYk
-###
+
 
 POST {{BaseUrl}}/api/Alquileres
 Accept: application/json
@@ -21,7 +16,7 @@ Content-Type: application/json
 ###
 
 POST {{BaseUrl}}/api/users
-Accept: application/application/json
+Accept: application/json
 Content-Type: application/json
 
 {
@@ -32,13 +27,19 @@ Content-Type: application/json
 }
 
 
-###
 
+###
+@name login
 POST {{BaseUrl}}/api/users/login
-Accept: application/application/json
+Accept: application/json
 Content-Type: application/json
 
 {
     "email": "facu@example.com",
     "password": "susPassword"
 }
+
+### 
+GET {{BaseUrl}}/api/vehiculos?desde=2025-10-01&hasta=2025-12-01
+Accept: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhYzE0ZGNkNS05OTk5LTRiOWItODY3ZC1jODNmMjkzOTM0NzAiLCJlbWFpbCI6ImZhY3VAZXhhbXBsZS5jb20iLCJleHAiOjE3NjA1ODk2NzIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAxNSIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAxNSJ9.jXTSFfsKD-UGUtaVeJdMxKjOkmSUucSw_1D3HVXQ590

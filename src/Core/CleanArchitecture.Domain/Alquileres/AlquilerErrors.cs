@@ -5,7 +5,7 @@ namespace CleanArchitecture.Domain.Alquileres;
 public static class AlquilerErrors
 {
 
-    public static Error NotFound => EntityErrors<Alquiler>.NotFound();
+    public static Error NotFound(AlquilerId id) => EntityErrors<Alquiler>.NotFound(id);
 
     public static readonly Error Overlap =
     Error.MakeError<Alquiler>(

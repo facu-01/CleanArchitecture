@@ -65,7 +65,7 @@ public static class ReservarFeature
 
             if (user is null)
             {
-                return Result.Failure<Guid>(UserErrors.NotFound);
+                return Result.Failure<Guid>(UserErrors.NotFound(userId));
             }
 
             var vehiculoId = new VehiculoId(request.VehiculoId);
@@ -73,7 +73,7 @@ public static class ReservarFeature
 
             if (vehiculo is null)
             {
-                return Result.Failure<Guid>(VehiculoErrors.NotFound);
+                return Result.Failure<Guid>(VehiculoErrors.NotFound(vehiculoId));
             }
 
             var duracionResult = DateRange.Create(request.FechaInicio, request.FechaFin);

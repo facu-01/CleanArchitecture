@@ -4,11 +4,17 @@ namespace CleanArchitecture.Domain.Users;
 
 public static class UserErrors
 {
-    public static Error NotFound => EntityErrors<User>.NotFound();
-    public static Error EmailYaEnUso =>
+    public static Error NotFound(UserId id) => EntityErrors<User>.NotFound(id);
+
+    public static Error NotFound(Email email) => Error.MakeError<User>(
+        nameof(NotFound),
+        $"Usuario no encontrado con email {email.Value}"
+    );
+
+    public static Error EmailYaEnUso(Email email) =>
         Error.MakeError<User>(
         nameof(EmailYaEnUso),
-        $"El email ya se encuentra en uso"
+        $"El email {email} ya se encuentra en uso"
     );
 
 

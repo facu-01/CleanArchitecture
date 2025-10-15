@@ -1,7 +1,5 @@
-using System.Net;
-
+using CleanArchitecture.Api.Extensions;
 using CleanArchitecture.Application.Alquileres;
-using CleanArchitecture.Domain.Abstractions;
 using CleanArchitecture.Domain.Alquileres;
 
 using MediatR;
@@ -25,13 +23,15 @@ namespace CleanArchitecture.Api.Controllers.Alquileres
 
 
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetByIdFeature.AlquilerResponse))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))]
         public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
         {
             var query = new GetByIdFeature.Query(id);
 
             var result = await _sender.Send(query, cancellationToken);
 
-            return result.IsSuccess ? Ok(result.Value) : NotFound(result.Error);
+            return result.IsSuccess ? Ok(result.Value) : NotFound(result.Error.ToProblemDetails());
         }
 
 
@@ -43,9 +43,8 @@ namespace CleanArchitecture.Api.Controllers.Alquileres
         );
 
         [HttpPost]
-        [Authorize]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(Guid))]
-        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(Error))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
         public async Task<IActionResult> ReservarAlquiler(
             [FromBody] AlquilerReservaRequest request,
@@ -65,8 +64,8 @@ namespace CleanArchitecture.Api.Controllers.Alquileres
             {
                 return result.Error.Code switch
                 {
-                    nameof(AlquilerErrors.NotFound) => NotFound(result.Error),
-                    _ => BadRequest(result.Error)
+                    nameof(AlquilerErrors.NotFound) => NotFound(result.Error.ToProblemDetails()),
+                    _ => BadRequest(result.Error.ToProblemDetails())
                 };
             }
 

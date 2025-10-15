@@ -12,8 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-.AddJwtBearer();
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
 
 builder.Services.ConfigureOptions<JwtOptionsSetup>();
 builder.Services.ConfigureOptions<JwtBearerOptionsSetup>();
@@ -39,7 +38,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.ApplyMigration();
-// app.SeedData();
+app.SeedData();
+app.SeedDataUsers();
 
 app.UseCustomExceptionHandler();
 

@@ -38,7 +38,7 @@ public static class LoginFeature
 
             if (user is null)
             {
-                return Result.Failure<string>(UserErrors.InvalidCredentials());
+                return Result.Failure<string>(UserErrors.NotFound(userEmail));
             }
 
             var passworHasher = new PasswordHasher<object>();

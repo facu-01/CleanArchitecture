@@ -1,5 +1,3 @@
-using System;
-
 using CleanArchitecture.Application.Abstractions.Messaging;
 using CleanArchitecture.Domain.Abstractions;
 using CleanArchitecture.Domain.Users;
@@ -50,7 +48,7 @@ public static class RegisterFeature
 
             if (exists)
             {
-                return Result.Failure(UserErrors.EmailYaEnUso);
+                return Result.Failure(UserErrors.EmailYaEnUso(userEmail));
             }
 
             var passwordHasher = new PasswordHasher<object>();

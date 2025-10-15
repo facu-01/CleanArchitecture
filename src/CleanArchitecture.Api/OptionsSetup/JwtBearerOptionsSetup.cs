@@ -1,4 +1,3 @@
-using System;
 using System.Text;
 
 using CleanArchitecture.Infraestructure.Authentication;
@@ -29,8 +28,8 @@ public class JwtBearerOptionsSetup : IConfigureNamedOptions<JwtBearerOptions>
     {
         ConfigureToken(options);
     }
-    
-    
+
+
     private void ConfigureToken(JwtBearerOptions options)
     {
         options.TokenValidationParameters = new()

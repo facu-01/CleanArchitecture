@@ -46,7 +46,7 @@ public static class GetByIdFeature
 
             if (alquiler is null)
             {
-                return Result.Failure<AlquilerResponse>(AlquilerErrors.NotFound);
+                return Result.Failure<AlquilerResponse>(AlquilerErrors.NotFound(alquilerId));
             }
 
             var alquilerResponse = new AlquilerResponse

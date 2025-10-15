@@ -1,5 +1,3 @@
-using System.Net;
-
 namespace CleanArchitecture.Domain.Abstractions;
 
 public record Error(string Code, string Detail, string Message)

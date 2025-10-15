@@ -1,5 +1,5 @@
+using CleanArchitecture.Api.Extensions;
 using CleanArchitecture.Application.Users;
-using CleanArchitecture.Domain.Abstractions;
 using CleanArchitecture.Domain.Users;
 
 using MediatR;
@@ -11,6 +11,7 @@ namespace CleanArchitecture.Api.Controllers.Users
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UsersController : ControllerBase
     {
         private readonly ISender _sender;
@@ -28,6 +29,9 @@ namespace CleanArchitecture.Api.Controllers.Users
 
         [AllowAnonymous]
         [HttpPost("login")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ProblemDetails))]
         public async Task<IActionResult> Login(
             [FromBody] LoginRequest request,
             CancellationToken cancellationToken
@@ -44,9 +48,9 @@ namespace CleanArchitecture.Api.Controllers.Users
             {
                 return result.Error.Code switch
                 {
-                    nameof(UserErrors.NotFound) => NotFound(result.Error),
-                    nameof(UserErrors.InvalidCredentials) => Unauthorized(result.Error),
-                    _ => BadRequest(result.Error)
+                    nameof(UserErrors.NotFound) => NotFound(result.Error.ToProblemDetails()),
+                    nameof(UserErrors.InvalidCredentials) => Unauthorized(result.Error.ToProblemDetails()),
+                    _ => BadRequest(result.Error.ToProblemDetails())
                 };
             }
 
@@ -64,7 +68,7 @@ namespace CleanArchitecture.Api.Controllers.Users
         [AllowAnonymous]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status409Conflict, Type = typeof(Error))]
+        [ProducesResponseType(StatusCodes.Status409Conflict, Type = typeof(ProblemDetails))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
         public async Task<IActionResult> Register(
             [FromBody] RegisterRequest request,
@@ -84,8 +88,8 @@ namespace CleanArchitecture.Api.Controllers.Users
             {
                 return result.Error.Code switch
                 {
-                    nameof(UserErrors.EmailYaEnUso) => Conflict(result.Error),
-                    _ => BadRequest(result.Error)
+                    nameof(UserErrors.EmailYaEnUso) => Conflict(result.Error.ToProblemDetails()),
+                    _ => BadRequest(result.Error.ToProblemDetails())
                 };
             }
 

@@ -1,8 +1,8 @@
 using CleanArchitecture.Application.Vehiculos;
+
 using MediatR;
 
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CleanArchitecture.Api.Controllers.Vehiculos
@@ -20,6 +20,7 @@ namespace CleanArchitecture.Api.Controllers.Vehiculos
         }
 
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<SearchAvaibleByDateRangeFeature.VehiculoResponse>))]
         public async Task<IActionResult> SearchVehiculos(
             DateOnly desde,
             DateOnly hasta,
