@@ -1,10 +1,27 @@
 services:
+    db:
+        image: postgres
+        environment:
+            POSTGRES_USER: db_user
+            POSTGRES_PASSWORD: db_user_pass
+            POSTGRES_DB: cleanarchitecture
+        restart: always
+        # volumes:
+        #     - ./.containers/database:/var/lib/postgresql/data
+        ports:
+            - 5432:5432
 
-  db:
-    image: postgres
-    environment:
-      POSTGRES_USER: db_user
-      POSTGRES_PASSWORD: db_user_pass
-      POSTGRES_DB: cleanarchitecture
-    ports:
-      - 5432:5432
+    cleanarchitecture.api:
+        image: ${DOCKER_REGISTRY-}cleanarchitectureapi
+        build:
+            context: .
+            dockerfile: src/CleanArchitecture.Api/Dockerfile
+        environment:
+            ASPNETCORE_ENVIRONMENT: Development
+            ASPNETCORE_HTTP_PORTS: 8080
+            ConnectionStrings__Database: "Host=db;Port=5432;Database=cleanarchitecture;Username=db_user;Password=db_user_pass;"
+        ports:
+            - 8080:8080
+            - 8081:8081
+        depends_on:
+          - db
