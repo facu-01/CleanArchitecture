@@ -54,7 +54,7 @@ namespace CleanArchitecture.Api.Controllers.Users
                 };
             }
 
-            return Ok(result.Value);
+            return Content(result.Value);
         }
 
 
