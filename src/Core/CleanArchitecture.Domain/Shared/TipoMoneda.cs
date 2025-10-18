@@ -7,8 +7,10 @@ public sealed record TipoMoneda
 
     public string Codigo { get; private set; }
 
-    public static Error InvalidCode(string codigo) =>
-    Error.MakeError<TipoMoneda>(nameof(InvalidCode), $"El codigo {codigo} no es valido");
+    public static Error InvalidCode(string codigo) => new(
+        nameof(InvalidCode),
+        nameof(TipoMoneda),
+        $"El codigo {codigo} no es valido");
 
     public static readonly TipoMoneda Usd = new("USD");
     public static readonly TipoMoneda Eur = new("EUR");

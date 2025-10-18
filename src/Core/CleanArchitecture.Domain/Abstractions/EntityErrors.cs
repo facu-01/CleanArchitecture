@@ -1,8 +1,16 @@
 ﻿namespace CleanArchitecture.Domain.Abstractions;
-internal static class EntityErrors<TEntity> where TEntity : IEntity
+public abstract class EntityErrors<TEntity> where TEntity : IEntity
 {
-    internal static Error NotFound(object identity) =>
-        Error.MakeError<TEntity>(
+    public static Error MakeError(string errorCode, string message)
+    {
+        return new Error(
+            errorCode,
+            $"{typeof(TEntity).Name}",
+            message
+        );
+    }
+    public static Error NotFound(object identity) =>
+        MakeError(
         nameof(NotFound),
         $"Entidad {typeof(TEntity).Name} no encontrada con {identity}"
     );

@@ -5,8 +5,9 @@ namespace CleanArchitecture.Domain.Reviews;
 public record Rating
 {
     public static Error InvalidRating(int value) =>
-        Error.MakeError<Rating>(
+        new(
         nameof(InvalidRating),
+        nameof(Rating.InvalidRating),
         $"El valor {value} no es valido como rating"
     );
     public int Value { get; init; }

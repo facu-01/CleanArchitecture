@@ -2,24 +2,23 @@ using CleanArchitecture.Domain.Abstractions;
 
 namespace CleanArchitecture.Domain.Users;
 
-public static class UserErrors
+public sealed class UserErrors : EntityErrors<User>
 {
-    public static Error NotFound(UserId id) => EntityErrors<User>.NotFound(id);
 
-    public static Error NotFound(Email email) => Error.MakeError<User>(
+    public static Error NotFound(Email email) => MakeError(
         nameof(NotFound),
         $"Usuario no encontrado con email {email.Value}"
     );
 
     public static Error EmailYaEnUso(Email email) =>
-        Error.MakeError<User>(
+        MakeError(
         nameof(EmailYaEnUso),
         $"El email {email} ya se encuentra en uso"
     );
 
 
     public static Error InvalidCredentials() =>
-        Error.MakeError<User>(
+        MakeError(
         nameof(InvalidCredentials),
         "Las credenciales indicadas son inválidas"
     );

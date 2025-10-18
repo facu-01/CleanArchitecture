@@ -6,8 +6,9 @@ public sealed record class DateRange
 {
     private DateRange() { }
 
-    public static Error InvalidDateRange => Error.MakeError<DateRange>(
+    public static Error InvalidDateRange => new(
         nameof(InvalidDateRange),
+        nameof(DateRange),
         "El rango de fechas especificado es invalido"
     );
 
