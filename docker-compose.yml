@@ -6,8 +6,8 @@ services:
             POSTGRES_PASSWORD: db_user_pass
             POSTGRES_DB: cleanarchitecture
         restart: always
-        # volumes:
-        #     - ./.containers/database:/var/lib/postgresql/data
+        volumes:
+            - ./.containers/database:/var/lib/postgresql
         ports:
             - 5432:5432
 

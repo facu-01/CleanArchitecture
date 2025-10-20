@@ -1,14 +1,14 @@
 using CleanArchitecture.Application.Vehiculos;
+using CleanArchitecture.Domain.Permissions;
+using CleanArchitecture.Infraestructure.Authentication;
 
 using MediatR;
 
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CleanArchitecture.Api.Controllers.Vehiculos
 {
     [Route("api/[controller]")]
-    [Authorize]
     [ApiController]
     public class VehiculosController : ControllerBase
     {
@@ -20,6 +20,7 @@ namespace CleanArchitecture.Api.Controllers.Vehiculos
         }
 
         [HttpGet]
+        [HasPermission(PermissionEnum.ReadUser)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<SearchAvaibleByDateRangeFeature.VehiculoResponse>))]
         public async Task<IActionResult> SearchVehiculos(
             DateOnly desde,
