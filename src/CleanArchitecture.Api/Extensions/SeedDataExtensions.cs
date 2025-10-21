@@ -1,5 +1,6 @@
 using Bogus;
 
+using CleanArchitecture.Domain.Roles;
 using CleanArchitecture.Domain.Users;
 using CleanArchitecture.Domain.Vehiculos;
 using CleanArchitecture.Infraestructure.DataAccess;
@@ -86,6 +87,13 @@ public static class SeedDataExtensions
                     new PasswordHash(passwordHasher.HashPassword(null!, "test"))
                 );
 
+                var roleUser = context.Set<Role>().First(r => r.Id == Role.User.Id);
+
+                user.Roles =
+                [
+                    roleUser
+                ];
+
                 context.Users.Add(user);
 
                 var admin = User.Registrar(
@@ -95,9 +103,19 @@ public static class SeedDataExtensions
                     new PasswordHash(passwordHasher.HashPassword(null!, "admin"))
                 );
 
+                var roleAdmin = context.Set<Role>().First(r => r.Id == Role.Administrator.Id);
+
+                admin.Roles =
+                [
+                    roleAdmin
+                ];
+
+
                 context.Users.Add(admin);
 
                 context.SaveChanges();
+
+
             }
 
         }
@@ -107,5 +125,6 @@ public static class SeedDataExtensions
             var logger = loggerFactory.CreateLogger<Program>();
             logger.LogError(ex, "Error en data seed");
         }
+
     }
 }

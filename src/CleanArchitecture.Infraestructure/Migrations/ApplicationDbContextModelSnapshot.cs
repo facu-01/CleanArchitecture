@@ -195,6 +195,9 @@ namespace CleanArchitecture.Infraestructure.Migrations
                     b.HasKey("RoleId", "PermissionId")
                         .HasName("pk_roles_permissions");
 
+                    b.HasIndex("PermissionId")
+                        .HasDatabaseName("ix_roles_permissions_permission_id");
+
                     b.ToTable("roles_permissions", (string)null);
 
                     b.HasData(
@@ -316,25 +319,6 @@ namespace CleanArchitecture.Infraestructure.Migrations
                         .HasName("pk_vehiculos");
 
                     b.ToTable("vehiculos", (string)null);
-                });
-
-            modelBuilder.Entity("CleanArchitecture.Infraestructure.DataAccess.Configurations.RolePermissionConfiguration", b =>
-                {
-                    b.Property<int>("PermissionsId")
-                        .HasColumnType("integer")
-                        .HasColumnName("permissions_id");
-
-                    b.Property<int>("RoleId")
-                        .HasColumnType("integer")
-                        .HasColumnName("role_id");
-
-                    b.HasKey("PermissionsId", "RoleId")
-                        .HasName("pk_role_permission_configuration");
-
-                    b.HasIndex("RoleId")
-                        .HasDatabaseName("ix_role_permission_configuration_role_id");
-
-                    b.ToTable("role_permission_configuration", (string)null);
                 });
 
             modelBuilder.Entity("CleanArchitecture.Domain.Alquileres.Alquiler", b =>
@@ -512,6 +496,23 @@ namespace CleanArchitecture.Infraestructure.Migrations
                         .HasConstraintName("fk_reviews_vehiculos_vehiculo_id");
                 });
 
+            modelBuilder.Entity("CleanArchitecture.Domain.Roles.RolePermission", b =>
+                {
+                    b.HasOne("CleanArchitecture.Domain.Permissions.Permission", null)
+                        .WithMany()
+                        .HasForeignKey("PermissionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_roles_permissions_permissions_permission_id");
+
+                    b.HasOne("CleanArchitecture.Domain.Roles.Role", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_roles_permissions_roles_role_id");
+                });
+
             modelBuilder.Entity("CleanArchitecture.Domain.Users.UserRole", b =>
                 {
                     b.HasOne("CleanArchitecture.Domain.Roles.Role", null)
@@ -627,23 +628,6 @@ namespace CleanArchitecture.Infraestructure.Migrations
 
                     b.Navigation("Precio")
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("CleanArchitecture.Infraestructure.DataAccess.Configurations.RolePermissionConfiguration", b =>
-                {
-                    b.HasOne("CleanArchitecture.Domain.Permissions.Permission", null)
-                        .WithMany()
-                        .HasForeignKey("PermissionsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_role_permission_configuration_permissions_permissions_id");
-
-                    b.HasOne("CleanArchitecture.Domain.Roles.Role", null)
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_role_permission_configuration_roles_role_id");
                 });
 #pragma warning restore 612, 618
         }

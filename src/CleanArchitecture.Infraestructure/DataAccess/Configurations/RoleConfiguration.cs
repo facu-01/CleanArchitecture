@@ -22,7 +22,7 @@ internal sealed class RoleConfiguration : IEntityTypeConfiguration<Role>
 
         builder.HasMany(r => r.Permissions)
             .WithMany()
-            .UsingEntity<RolePermissionConfiguration>();
+            .UsingEntity<RolePermission>();
 
     }
 }

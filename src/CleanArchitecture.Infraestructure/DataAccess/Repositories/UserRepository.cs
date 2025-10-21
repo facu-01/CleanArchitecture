@@ -10,9 +10,11 @@ internal sealed class UserRepository : GenericRepository<User, UserId>, IUserRep
     {
     }
 
-    public async Task<User?> GetByEmailAsync(Domain.Users.Email email, CancellationToken cancellationToken)
+    public async Task<User?> GetByEmailWithRolesAsync(Domain.Users.Email email, CancellationToken cancellationToken)
     {
         return await _dbContext.Set<User>()
+            .Include(u => u.Roles!)
+            .ThenInclude(r => r.Permissions)
             .FirstOrDefaultAsync(u => u.Email == email, cancellationToken);
     }
 

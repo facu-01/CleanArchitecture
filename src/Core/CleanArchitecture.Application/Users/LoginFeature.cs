@@ -34,7 +34,7 @@ public static class LoginFeature
         {
             var userEmail = new Email(request.Email);
 
-            var user = await _userRepository.GetByEmailAsync(userEmail, cancellationToken);
+            var user = await _userRepository.GetByEmailWithRolesAsync(userEmail, cancellationToken);
 
             if (user is null)
             {

@@ -36,13 +36,25 @@ Accept: application/json
 Content-Type: application/json
 
 {
-    "email": "facu@example.com",
-    "password": "susPassword"
+    "email": "test@test.com",
+    "password": "test"
 }
 
 ###
 
+
+###
+POST {{BaseUrl}}/api/users/login
+Accept: application/json
+Content-Type: application/json
+
+{
+    "email": "admin@test.com",
+    "password": "admin"
+}
+
+
 ### 
 GET {{BaseUrl}}/api/vehiculos?desde=2025-10-01&hasta=2025-12-01
 Accept: application/json
-Authorization: Bearer {{login.response.body.*}}
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5OTc3OTNhOC0wNjg4LTRmOWItOWRkZC02ZTk4NGFlMGM1NGEiLCJlbWFpbCI6ImFkbWluQHRlc3QuY29tIiwicGVybWlzc2lvbnMiOlsiUmVhZFVzZXIiLCJXcml0ZVVzZXIiLCJVcGRhdGVVc2VyIl0sImV4cCI6MTc2MTAzNTk1MCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MDE1IiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo1MDE1In0.ciqDB8dKvQVTKuIx5UIiowmJpgVJksG-vAfO-uTbA-I

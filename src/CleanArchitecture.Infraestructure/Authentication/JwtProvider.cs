@@ -21,11 +21,19 @@ public sealed class JwtProvider : IJwtProvider
 
     public Task<string> Generate(User user)
     {
+
+        var permissionsClaims =
+            user.Roles is null ?
+            [] :
+            user.Roles.SelectMany(r => r.Permissions ?? [])
+                .Select(p => new Claim(CustomClaims.Permissions, p.Nombre!.Value))
+                .ToList();
+
         var claims = new List<Claim>
         {
             new (JwtRegisteredClaimNames.Sub,user.Id.Value.ToString()),
             new (JwtRegisteredClaimNames.Email,user.Email.Value),
-        };
+        }.Concat(permissionsClaims);
 
         var signingCredentials = new SigningCredentials(
             new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.SecretKey)),

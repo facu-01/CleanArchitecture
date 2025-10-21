@@ -38,18 +38,6 @@ namespace CleanArchitecture.Infraestructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "roles_permissions",
-                columns: table => new
-                {
-                    role_id = table.Column<int>(type: "integer", nullable: false),
-                    permission_id = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("pk_roles_permissions", x => new { x.role_id, x.permission_id });
-                });
-
-            migrationBuilder.CreateTable(
                 name: "users",
                 columns: table => new
                 {
@@ -90,23 +78,23 @@ namespace CleanArchitecture.Infraestructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "role_permission_configuration",
+                name: "roles_permissions",
                 columns: table => new
                 {
-                    permissions_id = table.Column<int>(type: "integer", nullable: false),
-                    role_id = table.Column<int>(type: "integer", nullable: false)
+                    role_id = table.Column<int>(type: "integer", nullable: false),
+                    permission_id = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_role_permission_configuration", x => new { x.permissions_id, x.role_id });
+                    table.PrimaryKey("pk_roles_permissions", x => new { x.role_id, x.permission_id });
                     table.ForeignKey(
-                        name: "fk_role_permission_configuration_permissions_permissions_id",
-                        column: x => x.permissions_id,
+                        name: "fk_roles_permissions_permissions_permission_id",
+                        column: x => x.permission_id,
                         principalTable: "permissions",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "fk_role_permission_configuration_roles_role_id",
+                        name: "fk_roles_permissions_roles_role_id",
                         column: x => x.role_id,
                         principalTable: "roles",
                         principalColumn: "id",
@@ -269,9 +257,9 @@ namespace CleanArchitecture.Infraestructure.Migrations
                 column: "vehiculo_id");
 
             migrationBuilder.CreateIndex(
-                name: "ix_role_permission_configuration_role_id",
-                table: "role_permission_configuration",
-                column: "role_id");
+                name: "ix_roles_permissions_permission_id",
+                table: "roles_permissions",
+                column: "permission_id");
 
             migrationBuilder.CreateIndex(
                 name: "ix_user_roles_role_id",
@@ -290,9 +278,6 @@ namespace CleanArchitecture.Infraestructure.Migrations
         {
             migrationBuilder.DropTable(
                 name: "reviews");
-
-            migrationBuilder.DropTable(
-                name: "role_permission_configuration");
 
             migrationBuilder.DropTable(
                 name: "roles_permissions");
