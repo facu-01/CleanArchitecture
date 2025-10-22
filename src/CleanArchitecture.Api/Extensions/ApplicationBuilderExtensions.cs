@@ -36,4 +36,9 @@ public static class ApplicationBuilderExtensions
         app.UseMiddleware<ExceptionHandlerMiddleware>();
     }
 
+    public static void UseRequestContextLogging(this IApplicationBuilder app)
+    {
+        app.UseMiddleware<RequestContextLogginMiddleware>();
+    }
+
 }

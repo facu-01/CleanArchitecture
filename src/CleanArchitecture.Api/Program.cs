@@ -8,8 +8,13 @@ using CleanArchitecture.Infraestructure.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 
+using Serilog;
+
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Host.UseSerilog((context, conf) =>
+    conf.ReadFrom.Configuration(context.Configuration)
+);
 
 builder.Services.AddControllers();
 
@@ -45,6 +50,10 @@ if (app.Environment.IsDevelopment())
 app.ApplyMigration();
 app.SeedData();
 app.SeedDataUsers();
+
+app.UseRequestContextLogging();
+
+app.UseSerilogRequestLogging();
 
 app.UseCustomExceptionHandler();
 

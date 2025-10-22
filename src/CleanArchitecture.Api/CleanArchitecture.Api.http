@@ -1,4 +1,4 @@
-@BaseUrl = http://localhost:5015
+@BaseUrl = http://localhost:8080
 
 
 
@@ -32,6 +32,19 @@ Content-Type: application/json
 ###
 @name login
 POST {{BaseUrl}}/api/users/login
+Accept: application/json
+Content-Type: application/json
+
+{
+    "email": "test@test.com",
+    "password": "test"
+}
+
+###
+
+###
+@name login
+POST http://localhost:5015/api/users/login
 Accept: application/json
 Content-Type: application/json
 

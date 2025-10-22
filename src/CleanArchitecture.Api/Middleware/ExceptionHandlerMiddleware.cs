@@ -1,6 +1,7 @@
-using System;
 using System.Net;
+
 using CleanArchitecture.Application.Exceptions;
+
 using Microsoft.AspNetCore.Mvc;
 
 namespace CleanArchitecture.Api.Middleware;

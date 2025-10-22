@@ -1,5 +1,6 @@
 services:
     db:
+        container_name: db
         image: postgres
         environment:
             POSTGRES_USER: db_user
@@ -11,17 +12,27 @@ services:
         ports:
             - 5432:5432
 
-    cleanarchitecture.api:
+    api:
+        container_name: api
         image: ${DOCKER_REGISTRY-}cleanarchitectureapi
         build:
             context: .
             dockerfile: src/CleanArchitecture.Api/Dockerfile
         environment:
-            ASPNETCORE_ENVIRONMENT: Development
+            ASPNETCORE_ENVIRONMENT: Test
             ASPNETCORE_HTTP_PORTS: 8080
-            ConnectionStrings__Database: "Host=db;Port=5432;Database=cleanarchitecture;Username=db_user;Password=db_user_pass;"
         ports:
             - 8080:8080
             - 8081:8081
         depends_on:
           - db
+    
+    serilogseq:
+        container_name: serilogseq
+        image: datalust/seq:2023.4
+        environment:
+            ACCEPT_EULA: Y
+        ports:
+            - 5341:5341
+            - 8082:80
+     
