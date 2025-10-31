@@ -21,7 +21,7 @@ internal sealed class ReviewConfiguration : IEntityTypeConfiguration<Review>
         builder.OwnsOne(r => r.Rating,
             rB => rB.Property(ra => ra.Value)
                     .HasColumnName("rating")
-            );
+        );
 
 
         builder.Property(r => r.Comentario)

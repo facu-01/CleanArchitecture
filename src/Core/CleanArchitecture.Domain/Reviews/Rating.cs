@@ -4,6 +4,8 @@ namespace CleanArchitecture.Domain.Reviews;
 
 public record Rating
 {
+    private Rating() { }
+
     public static Error InvalidRating(int value) =>
         new(
         nameof(InvalidRating),

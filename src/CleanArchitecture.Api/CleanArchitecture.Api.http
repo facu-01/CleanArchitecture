@@ -1,3 +1,4 @@
+
 @BaseUrl = http://localhost:8080
 
 
@@ -44,7 +45,7 @@ Content-Type: application/json
 
 ###
 @name login
-POST http://localhost:5015/api/users/login
+POST {{BaseUrl}}/api/users/login
 Accept: application/json
 Content-Type: application/json
 
@@ -71,3 +72,10 @@ Content-Type: application/json
 GET {{BaseUrl}}/api/vehiculos?desde=2025-10-01&hasta=2025-12-01
 Accept: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5OTc3OTNhOC0wNjg4LTRmOWItOWRkZC02ZTk4NGFlMGM1NGEiLCJlbWFpbCI6ImFkbWluQHRlc3QuY29tIiwicGVybWlzc2lvbnMiOlsiUmVhZFVzZXIiLCJXcml0ZVVzZXIiLCJVcGRhdGVVc2VyIl0sImV4cCI6MTc2MTAzNTk1MCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MDE1IiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo1MDE1In0.ciqDB8dKvQVTKuIx5UIiowmJpgVJksG-vAfO-uTbA-I
+
+###
+
+###
+GET {{BaseUrl}}/api/vehiculos/paginated?pageIndex=1&pageSize=2&sort=modeloDesc&modeloFilter=tau
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4OTg1NTlmNy1jZGViLTQyNTEtYjIwMi05MzUwZTk4ZTUzMDAiLCJlbWFpbCI6InRlc3RAdGVzdC5jb20iLCJwZXJtaXNzaW9ucyI6IlJlYWRVc2VyIiwiZXhwIjoxNzYxNzE2NDc3LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUwMTUiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjUwMTUifQ.JDuCI2yiW_5k0JAeQuEg_lCryj2XsYOh0nUO3-Jg3T4
+###

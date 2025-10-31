@@ -1,11 +1,7 @@
-using System;
-
 namespace CleanArchitecture.Domain.Shared;
 
 public record SpecificationEntry
 {
-    public string? Sort { get; set; }
-
     public int PageIndex { get; set; } = 1;
 
     private const int MaxPageSize = 50;
@@ -20,7 +16,5 @@ public record SpecificationEntry
             _pageSize = value;
         }
     }
-
-    public string? Search { get; set; }
 
 }

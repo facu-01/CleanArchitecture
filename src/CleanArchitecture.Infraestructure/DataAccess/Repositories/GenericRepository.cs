@@ -28,12 +28,15 @@ internal abstract class GenericRepository<TEntity, TEntityId> : IGenericReposito
         return await _dbContext.Set<TEntity>().FirstOrDefaultAsync(e => e.Id == id, cancellationToken);
     }
 
-    private IQueryable<TEntity> ApplySpecification(ISpecification<TEntity, TEntityId> spec)
+    private IQueryable<TEntity> ApplySpecification(ISpecification<TEntity, TEntityId> spec, bool paginated)
     {
-        return SpecificationEvaluator<TEntity, TEntityId>.GetQuery(
+        var query = SpecificationEvaluator<TEntity, TEntityId>.GetQuery(
             _dbContext.Set<TEntity>().AsQueryable(),
-            spec
+            spec,
+            paginated
         );
+
+        return query;
     }
 
     public async Task<IReadOnlyList<TEntity>> GetAllWithSpec(
@@ -41,12 +44,12 @@ internal abstract class GenericRepository<TEntity, TEntityId> : IGenericReposito
         CancellationToken cancellationToken
     )
     {
-        return await ApplySpecification(spec).ToListAsync(cancellationToken);
+        return await ApplySpecification(spec, true).ToListAsync(cancellationToken);
     }
 
-    public async Task<int> CountAsync(ISpecification<TEntity,TEntityId> spec, CancellationToken cancellationToken)
+    public async Task<int> CountAsync(ISpecification<TEntity, TEntityId> spec, CancellationToken cancellationToken)
     {
-        return await ApplySpecification(spec).CountAsync(cancellationToken);
+        return await ApplySpecification(spec, false).CountAsync(cancellationToken);
     }
 
 }

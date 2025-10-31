@@ -1,5 +1,7 @@
 using CleanArchitecture.Application.Vehiculos;
+using CleanArchitecture.Domain.Abstractions;
 using CleanArchitecture.Domain.Permissions;
+using CleanArchitecture.Domain.Vehiculos;
 using CleanArchitecture.Infraestructure.Authentication;
 
 using MediatR;
@@ -34,5 +36,17 @@ namespace CleanArchitecture.Api.Controllers.Vehiculos
 
             return Ok(result.Value);
         }
+
+        [HttpGet("paginated")]
+        [HasPermission(PermissionEnum.ReadUser)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginationResult<Vehiculo, VehiculoId>))]
+        public async Task<IActionResult> GetVehiculosPaginated(
+            [FromQuery] GetVehiculosPaginated.Query query,
+            CancellationToken cancellationToken)
+        {
+            var result = await _sender.Send(query, cancellationToken);
+            return Ok(result.Value);
+        }
+
     }
 }
