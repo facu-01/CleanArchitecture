@@ -1,8 +1,8 @@
-using System;
 using CleanArchitecture.Domain.Alquileres;
 using CleanArchitecture.Domain.Reviews;
 using CleanArchitecture.Domain.Users;
 using CleanArchitecture.Domain.Vehiculos;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -18,9 +18,11 @@ internal sealed class ReviewConfiguration : IEntityTypeConfiguration<Review>
         builder.Property(r => r.Id)
         .HasConversion(reviewId => reviewId.Value, value => new ReviewId(value));
 
+        builder.OwnsOne(r => r.Rating,
+            rB => rB.Property(ra => ra.Value)
+                    .HasColumnName("rating")
+            );
 
-        builder.Property(r => r.Rating)
-            .HasConversion(rating => rating.Value, value => Rating.Create(value).Value);
 
         builder.Property(r => r.Comentario)
             .HasMaxLength(200)

@@ -1,6 +1,6 @@
-using System;
 using CleanArchitecture.Domain.Shared;
 using CleanArchitecture.Domain.Vehiculos;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -19,10 +19,12 @@ internal sealed class VehiculoConfiguration : IEntityTypeConfiguration<Vehiculo>
 
         builder.OwnsOne(v => v.Direccion);
 
-        builder.Property(v => v.Modelo)
+        builder.OwnsOne(v => v.Modelo,
+            mb => mb.Property(m => m.Value)
+            .HasColumnName("modelo")
             .HasMaxLength(200)
-            .HasConversion(modelo => modelo.Value,
-                           value => new Modelo(value));
+        );
+
 
         builder.Property(v => v.Vin)
             .HasMaxLength(500)

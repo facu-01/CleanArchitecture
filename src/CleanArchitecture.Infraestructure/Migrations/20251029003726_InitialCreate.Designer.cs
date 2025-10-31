@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CleanArchitecture.Infraestructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251021033352_InitialCreate")]
+    [Migration("20251029003726_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -127,10 +127,6 @@ namespace CleanArchitecture.Infraestructure.Migrations
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("fecha_creacion");
-
-                    b.Property<int>("Rating")
-                        .HasColumnType("integer")
-                        .HasColumnName("rating");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid")
@@ -299,12 +295,6 @@ namespace CleanArchitecture.Infraestructure.Migrations
                     b.Property<DateTime?>("FechaUltimoAlquiler")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("fecha_ultimo_alquiler");
-
-                    b.Property<string>("Modelo")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)")
-                        .HasColumnName("modelo");
 
                     b.Property<uint>("Version")
                         .IsConcurrencyToken()
@@ -497,6 +487,28 @@ namespace CleanArchitecture.Infraestructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_reviews_vehiculos_vehiculo_id");
+
+                    b.OwnsOne("CleanArchitecture.Domain.Reviews.Rating", "Rating", b1 =>
+                        {
+                            b1.Property<Guid>("ReviewId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("id");
+
+                            b1.Property<int>("Value")
+                                .HasColumnType("integer")
+                                .HasColumnName("rating");
+
+                            b1.HasKey("ReviewId");
+
+                            b1.ToTable("reviews");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ReviewId")
+                                .HasConstraintName("fk_reviews_reviews_id");
+                        });
+
+                    b.Navigation("Rating")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("CleanArchitecture.Domain.Roles.RolePermission", b =>
@@ -575,6 +587,27 @@ namespace CleanArchitecture.Infraestructure.Migrations
                                 .HasConstraintName("fk_vehiculos_vehiculos_id");
                         });
 
+                    b.OwnsOne("CleanArchitecture.Domain.Vehiculos.Modelo", "Modelo", b1 =>
+                        {
+                            b1.Property<Guid>("VehiculoId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("id");
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasMaxLength(200)
+                                .HasColumnType("character varying(200)")
+                                .HasColumnName("modelo");
+
+                            b1.HasKey("VehiculoId");
+
+                            b1.ToTable("vehiculos");
+
+                            b1.WithOwner()
+                                .HasForeignKey("VehiculoId")
+                                .HasConstraintName("fk_vehiculos_vehiculos_id");
+                        });
+
                     b.OwnsOne("CleanArchitecture.Domain.Shared.Moneda", "Mantenimiento", b1 =>
                         {
                             b1.Property<Guid>("VehiculoId")
@@ -627,6 +660,9 @@ namespace CleanArchitecture.Infraestructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Mantenimiento")
+                        .IsRequired();
+
+                    b.Navigation("Modelo")
                         .IsRequired();
 
                     b.Navigation("Precio")
