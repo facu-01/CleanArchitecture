@@ -7,6 +7,7 @@ using CleanArchitecture.Domain.Vehiculos;
 using CleanArchitecture.Infraestructure.DataAccess;
 using CleanArchitecture.Infraestructure.DataAccess.Repositories;
 using CleanArchitecture.Infraestructure.Email;
+using CleanArchitecture.Infraestructure.Outbox;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -43,6 +44,9 @@ public static class ServiceRegistration
 
 
         services.AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<ApplicationDbContext>());
+
+        services.Configure<OutboxOptions>(configuration.GetSection("Outbox"));
+        services.AddHostedService<InvokeOutboxMessagesJob>();
 
         return services;
     }

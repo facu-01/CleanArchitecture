@@ -1,11 +1,12 @@
+using System.Text.Json;
+
 using CleanArchitecture.Application.Exceptions;
 using CleanArchitecture.Domain.Abstractions;
 using CleanArchitecture.Domain.Alquileres;
 using CleanArchitecture.Domain.Reviews;
 using CleanArchitecture.Domain.Users;
 using CleanArchitecture.Domain.Vehiculos;
-
-using MediatR;
+using CleanArchitecture.Infraestructure.Outbox;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -14,11 +15,9 @@ namespace CleanArchitecture.Infraestructure.DataAccess;
 public sealed class ApplicationDbContext : DbContext, IUnitOfWork
 {
 
-    private readonly IPublisher _publisher;
 
-    public ApplicationDbContext(DbContextOptions options, IPublisher publisher) : base(options)
+    public ApplicationDbContext(DbContextOptions options) : base(options)
     {
-        _publisher = publisher;
     }
     public DbSet<Alquiler> Alquileres { get; set; }
 
@@ -27,6 +26,7 @@ public sealed class ApplicationDbContext : DbContext, IUnitOfWork
     public DbSet<Vehiculo> Vehiculos { get; set; }
 
     public DbSet<User> Users { get; set; }
+    public DbSet<OutboxMessage> OutboxMessages { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -40,9 +40,9 @@ public sealed class ApplicationDbContext : DbContext, IUnitOfWork
         try
         {
 
-            var result = await base.SaveChangesAsync(cancellationToken);
+            await RegisterOutboxMessages();
 
-            await PublishDomainEventsAsync();
+            var result = await base.SaveChangesAsync(cancellationToken);
 
             return result;
         }
@@ -53,7 +53,7 @@ public sealed class ApplicationDbContext : DbContext, IUnitOfWork
 
     }
 
-    private async Task PublishDomainEventsAsync()
+    private async Task RegisterOutboxMessages()
     {
         var domainEvents = ChangeTracker
             .Entries<IEntity>()
@@ -63,12 +63,25 @@ public sealed class ApplicationDbContext : DbContext, IUnitOfWork
                 var domainEvents = entity.GetDomainEvents();
                 entity.ClearDomainEvents();
                 return domainEvents;
-            }).ToList();
+            }).Select(
+                domainEvent =>
+                {
+                    var content = JsonSerializer.Serialize(
+                            domainEvent,
+                            OutboxMessageContentJsonSerializer.Options
+                        );
 
-        foreach (var domainEvent in domainEvents)
-        {
-            await _publisher.Publish(domainEvent);
-        }
+                    return new OutboxMessage(
+                        Guid.NewGuid(),
+                        DateTime.UtcNow,
+                        domainEvent.MaxRetries,
+                        0,
+                        domainEvent.GetType().Name,
+                        content
+                    );
+                }
+            ).ToList();
 
+        await AddRangeAsync(domainEvents);
     }
 }

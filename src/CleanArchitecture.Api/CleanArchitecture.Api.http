@@ -1,5 +1,5 @@
 
-@BaseUrl = http://localhost:8080
+@BaseUrl = http://localhost:5015
 
 
 
@@ -22,7 +22,7 @@ Accept: application/json
 Content-Type: application/json
 
 {
-    "email": "facu@example.com",
+    "email": "facu22@example.com",
     "nombre": "facu",
     "apellido": "facu",
     "password": "susPassword"

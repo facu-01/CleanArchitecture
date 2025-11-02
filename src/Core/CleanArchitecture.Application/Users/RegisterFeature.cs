@@ -1,8 +1,12 @@
+using CleanArchitecture.Application.Abstractions.Email;
 using CleanArchitecture.Application.Abstractions.Messaging;
 using CleanArchitecture.Domain.Abstractions;
 using CleanArchitecture.Domain.Users;
+using CleanArchitecture.Domain.Users.Events;
 
 using FluentValidation;
+
+using MediatR;
 
 using Microsoft.AspNetCore.Identity;
 
@@ -70,6 +74,31 @@ public static class RegisterFeature
         }
     }
 
+    internal sealed class NotificationHandler : INotificationHandler<UserRegisteredDomainEvent>
+    {
+
+        private readonly IUserRepository _userRepository;
+        private readonly IEmailService _emailService;
+
+        public NotificationHandler(IUserRepository userRepository, IEmailService emailService)
+        {
+            _userRepository = userRepository;
+            _emailService = emailService;
+        }
+
+        public async Task Handle(UserRegisteredDomainEvent notification, CancellationToken cancellationToken)
+        {
+            var user = await _userRepository.GetByIdAsync(notification.Id, cancellationToken);
+
+            if (user is null) return;
+
+            await _emailService.SendAsync(
+                user.Email,
+                "Welcome to Clean Architecture App",
+                $"Hello {user.Nombre.Value}, welcome to our application!"
+            );
+        }
+    }
 
 
 }
